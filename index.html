@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Hyderabadi Biryani War Room | Live Voting & Underground Food Spots</title>
+  <meta name="description" content="Resolve the eternal group dispute on where to get the best authentic Hyderabadi Dum Biryani right now. Live voting, hyper-local distance filters, secret underground food gems, and hilarious street slang error warnings.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%3E<text y=%2226%22 font-size=%2224%22>🍲</text></svg>">
+</head>
+<body>
+
+  <!-- Top Real-Time Status Ticker -->
+  <header class="top-ticker" role="banner">
+    <div class="ticker-content">
+      <div class="ticker-item">
+        <span class="status-dot red"></span>
+        <span>Begumpet & Panjagutta Flyover: <strong>High Jam (35 min delay)</strong></span>
+      </div>
+      <div class="ticker-item">
+        <span class="status-dot amber"></span>
+        <span>Meridian Raita Advisory: <strong>Double Salan Recommended</strong></span>
+      </div>
+      <div class="ticker-item">
+        <span class="status-dot"></span>
+        <span>Shah Ghouse Tolichowki: <strong>Degh Handi Freshly Opened</strong></span>
+      </div>
+    </div>
+    <div class="gang-presence">
+      <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Gang Online:</span>
+      <div class="gang-avatars" title="Salman, Priya, Asif, Sneha, Imran, Bunny are voting live">
+        <div class="gang-avatar">S</div>
+        <div class="gang-avatar">P</div>
+        <div class="gang-avatar">A</div>
+        <div class="gang-avatar">Sn</div>
+        <div class="gang-avatar">I</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Banner -->
+  <main>
+    <div class="hero-wrapper">
+      <section class="hero-card" aria-label="Hero Section">
+        <img src="assets/biryani_hero.jpg" alt="Authentic Hyderabadi Mutton Dum Biryani in clay handi" class="hero-bg-img" width="1280" height="720">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <div class="hero-pill">
+            <span>🔥 HYDERABADI DUM BIRYANI WAR ROOM</span>
+          </div>
+          <h1 class="hero-title">
+            End The Group Argument: <span>Where's The Best Biryani Right Now?</span>
+          </h1>
+          <p class="hero-subtitle">
+            Skip the tourist traps. Live crowd-voting, real-time distance calculations from your exact spot, and the secret list of 12 underground local food joints that generic AI doesn't know about.
+          </p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" id="btnSimulateGang" aria-label="Simulate Gang Voting">
+              ⚡ Gang Ko Vote Karne Do (Simulate Live)
+            </button>
+            <button class="btn btn-gold" id="btnSpinWheel" aria-label="Spin Handi Decider Wheel">
+              🎯 Spin The Handi Wheel (Tie-Breaker)
+            </button>
+            <a href="#slangLabSection" class="btn btn-secondary">
+              🗣️ Slang Error Laboratory
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="app-container">
+
+      <!-- Interactive Control Deck (Hubs, Distance, Filters) -->
+      <section class="control-deck" aria-label="Filter and Search Controls">
+        <div class="deck-row">
+          <!-- Hub Picker -->
+          <div class="control-group">
+            <label class="control-label" for="hubSelect">
+              <span>📍 Your Starting Point</span>
+              <span style="color: var(--mint-400);">Live GPS Ready</span>
+            </label>
+            <div class="select-wrapper">
+              <select id="hubSelect" class="custom-select" aria-label="Select Starting Point in Hyderabad"></select>
+            </div>
+          </div>
+
+          <!-- Distance Slider -->
+          <div class="control-group">
+            <label class="control-label" for="distSlider">
+              <span>📏 Maximum Distance</span>
+              <span class="value-badge" id="distLabel">Anywhere in Hyd</span>
+            </label>
+            <div class="slider-container">
+              <input type="range" id="distSlider" class="range-slider" min="2" max="20" step="1" value="20" aria-label="Maximum distance filter in kilometers">
+            </div>
+          </div>
+
+          <!-- Search Bar -->
+          <div class="control-group search-wrapper">
+            <label class="control-label" for="searchInput">
+              <span>🔍 Quick Spot / Area Search</span>
+            </label>
+            <div style="position: relative;">
+              <span class="search-icon">🔎</span>
+              <input type="text" id="searchInput" class="search-input" placeholder="Search by spot (e.g. Meridian, Shadab, Chicha's) or area..." aria-label="Search food spots">
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Chips Row -->
+        <div class="deck-row" style="border-top: 1px solid var(--border-glass); padding-top: 1rem;">
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <span style="font-size: 0.78rem; text-transform: uppercase; font-weight: 700; color: var(--text-dim); margin-right: 4px;">Meat Preference:</span>
+            <div class="chip active" data-meat="all">All Specialties</div>
+            <div class="chip" data-meat="mutton">🍖 Pure Mutton Dum</div>
+            <div class="chip" data-meat="chicken">🍗 Chicken Dum</div>
+            <div class="chip" data-meat="beef">🥩 Kalyani / Beef Street</div>
+          </div>
+
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-left: auto;">
+            <span style="font-size: 0.78rem; text-transform: uppercase; font-weight: 700; color: var(--text-dim); margin-right: 4px;">Vibe & Logistics:</span>
+            <div class="chip active" data-vibe="all">Any Vibe</div>
+            <div class="chip" data-vibe="lateNight">🌙 2:00 AM Late Night</div>
+            <div class="chip" data-vibe="valet">🅿️ Valet Parking Friendly</div>
+            <div class="chip" data-vibe="underground">🔥 Underground Cult Only</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Layout: Grid of Spots + Gang Feed Sidebar -->
+      <div class="main-layout">
+        
+        <!-- Spots Grid Feed -->
+        <section aria-label="Biryani Spot Leaderboard">
+          <div class="section-head">
+            <h2 class="section-title">
+              <span>👑 Live Leaderboard & Secret Gems</span>
+              <span class="counter-tag" id="resultsCount">12 Spots</span>
+            </h2>
+            <div style="font-size: 0.8rem; color: var(--text-dim);">
+              Ranked dynamically by group votes & route distance
+            </div>
+          </div>
+
+          <div class="spots-grid" id="spotsContainer" role="region" aria-live="polite">
+            <!-- Dynamically populated by app.js -->
+          </div>
+        </section>
+
+        <!-- Sidebar: Gang Banter & Tie-Breaker Handi Decider -->
+        <aside class="sidebar" aria-label="Gang Banter and Tools">
+          
+          <!-- Tie-Breaker Card -->
+          <div class="side-card decider-card">
+            <div style="font-size: 0.75rem; font-weight: 800; color: var(--gold-400); text-transform: uppercase; letter-spacing: 1.5px;">
+              Group Deadlock Resolver
+            </div>
+            <h3 style="font-family: var(--font-royal); font-size: 1.3rem; margin: 4px 0 8px 0; color: #fff;">
+              Spin The Biryani Handi
+            </h3>
+            <p style="font-size: 0.82rem; color: #cbd5e1; margin-bottom: 12px;">
+              Can't agree after 30 minutes of fighting? Let the sacred Nizami Handi wheel make the final call!
+            </p>
+            <div class="handi-wheel-preview">
+              <span class="handi-pot-icon" aria-hidden="true">🍲</span>
+            </div>
+            <button class="btn btn-gold" onclick="openDeciderModal()" style="width: 100%; justify-content: center;">
+              🎲 Launch Decider Wheel
+            </button>
+          </div>
+
+          <!-- Gang Discussion Feed -->
+          <div class="side-card">
+            <div class="side-header">
+              <span class="side-title">
+                <span>💬 Gang War Room Live</span>
+              </span>
+              <span style="font-size: 0.72rem; color: var(--mint-400); font-weight: 700;">● Active</span>
+            </div>
+            <div class="gang-chat-box" id="gangChatBox" aria-live="polite">
+              <!-- Dynamically populated with chat bubbles -->
+            </div>
+            <div style="margin-top: 12px;">
+              <button class="btn btn-secondary btn-sm" onclick="triggerSingleGangVote()" style="width: 100%; justify-content: center;">
+                + Trigger Friend's Vote & Hot Take
+              </button>
+            </div>
+          </div>
+
+          <!-- Slang Transformation Rule Quickcard -->
+          <div class="side-card" style="border-left: 3px solid var(--saffron-500);">
+            <div style="font-size: 0.75rem; font-weight: 800; color: var(--saffron-400); text-transform: uppercase; margin-bottom: 4px;">
+              📜 Hyderabadi Slang Rule Active
+            </div>
+            <div style="font-size: 0.8rem; color: #e2e8f0; line-height: 1.5;">
+              Boring software errors are automatically rewritten into authentic Dakhni street slang (traffic delays, bad parking challans & the Meridian raita code).
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+
+      <!-- Slang Error Laboratory Section -->
+      <section class="slang-lab-section" id="slangLabSection" aria-label="Slang Error Laboratory">
+        <div class="lab-header">
+          <span class="lab-tag">Interactive Street Slang Roaster</span>
+          <h2 class="lab-title">Test The Hyderabadi Slang Rule Engine</h2>
+          <p class="lab-subtitle">
+            Notice how boring, sterile corporate software error messages transform into witty, hyper-local street advice. Click any preset test below or type your own boring error message!
+          </p>
+        </div>
+
+        <div class="lab-presets-grid">
+          <div class="preset-card" onclick="testSlangError('PARKING')">
+            <div class="preset-head">
+              <span>🚨 CAR PARKING FULL</span>
+              <span style="color: var(--saffron-400);">Click to Test</span>
+            </div>
+            <div class="preset-boring">"ERROR 403: No parking space available at destination."</div>
+          </div>
+
+          <div class="preset-card" onclick="testSlangError('TRAFFIC')">
+            <div class="preset-head">
+              <span>🚦 BEGUMPET TRAFFIC JAM</span>
+              <span style="color: var(--saffron-400);">Click to Test</span>
+            </div>
+            <div class="preset-boring">"ALERT 504: Route delayed by heavy vehicular traffic."</div>
+          </div>
+
+          <div class="preset-card" onclick="testSlangError('RAITA_DISPUTE')">
+            <div class="preset-head">
+              <span>🥣 THE MERIDIAN RAITA DISPUTE</span>
+              <span style="color: var(--saffron-400);">Click to Test</span>
+            </div>
+            <div class="preset-boring">"WARNING: User requested additional side condiment (Raita)."</div>
+          </div>
+
+          <div class="preset-card" onclick="testSlangError('EMPTY_SEARCH')">
+            <div class="preset-head">
+              <span>🔍 ZERO SEARCH RESULTS</span>
+              <span style="color: var(--saffron-400);">Click to Test</span>
+            </div>
+            <div class="preset-boring">"ERROR 404: No restaurants match specified search criteria."</div>
+          </div>
+
+          <div class="preset-card" onclick="testSlangError('RATE_LIMIT')">
+            <div class="preset-head">
+              <span>⚡ RAPID CLICK RATE LIMIT</span>
+              <span style="color: var(--saffron-400);">Click to Test</span>
+            </div>
+            <div class="preset-boring">"ERROR 429: Too many voting requests submitted in short time."</div>
+          </div>
+
+          <div class="preset-card" onclick="testSlangError('TIE_VOTE')">
+            <div class="preset-head">
+              <span>⚖️ 50-50 GROUP STALEMATE</span>
+              <span style="color: var(--saffron-400);">Click to Test</span>
+            </div>
+            <div class="preset-boring">"CONFLICT: Group vote resulted in a tie. Decision deadlock."</div>
+          </div>
+
+          <div class="preset-card" onclick="testSlangError('TOURIST_TRAP')">
+            <div class="preset-head">
+              <span>🏢 TOURIST CHAIN TRAP</span>
+              <span style="color: var(--saffron-400);">Click to Test</span>
+            </div>
+            <div class="preset-boring">"WARNING: Non-authentic commercial chain selected (Paradise)."</div>
+          </div>
+
+          <div class="preset-card" onclick="testSlangError('OUT_OF_STOCK')">
+            <div class="preset-head">
+              <span>🍲 BIRYANI DEGH EXHAUSTED</span>
+              <span style="color: var(--saffron-400);">Click to Test</span>
+            </div>
+            <div class="preset-boring">"ERROR 410: Biryani handi has been depleted / Kitchen closed."</div>
+          </div>
+        </div>
+
+        <!-- Custom Roaster Tool -->
+        <div class="custom-roaster-box">
+          <input type="text" id="customRoasterInput" class="custom-roaster-input" placeholder="Type ANY boring error (e.g. 'Payment timeout', 'GPS connection dropped', 'Table occupied')...">
+          <button class="btn btn-primary" id="btnRoastCustom">
+            🔥 Roast With Hyderabadi Slang
+          </button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Modal: Tie-Breaker Handi Wheel -->
+  <div class="modal-overlay" id="deciderModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <h2 id="modalTitle" style="font-family: var(--font-royal); font-size: 1.6rem; color: #fff;">
+        🎡 Spin The Biryani Handi
+      </h2>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
+        Top contested spots on the wheel. Give it a spin to seal your gang's destiny!
+      </p>
+
+      <div class="wheel-canvas-container">
+        <div class="wheel-pointer"></div>
+        <canvas id="wheelCanvas" width="320" height="320"></canvas>
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 1rem;">
+        <button class="btn btn-gold" id="btnTriggerSpin" onclick="spinHandiWheel()">
+          🌀 Ghumaao Handi! (Spin Now)
+        </button>
+        <button class="btn btn-secondary" id="btnCloseModal">
+          Close
+        </button>
+      </div>
+
+      <div class="verdict-box" id="verdictContainer" style="display: none;">
+        <!-- Filled when wheel stops -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="spots.js"></script>
+  <script src="slang-engine.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>
