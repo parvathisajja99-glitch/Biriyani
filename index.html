@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Hyderabadi Biryani War Room | Live Voting & Underground Food Spots</title>
-  <meta name="description" content="Resolve the eternal group dispute on where to get the best authentic Hyderabadi Dum Biryani right now. Live voting, hyper-local distance filters, secret underground food gems, and hilarious street slang error warnings.">
+  <title>The Hyderabadi Biryani War Room | Live Voting, Battles & Secret Food Spots</title>
+  <meta name="description" content="Resolve the eternal group dispute on where to get the best authentic Hyderabadi Dum Biryani right now. Live voting, 1v1 Battle Royale, distance filters, Meridian Raita Simulator, and hilarious street slang warnings.">
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%3E<text y=%2226%22 font-size=%2224%22>🍲</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍲</text></svg>">
 </head>
 <body>
 
@@ -27,7 +27,9 @@
       </div>
     </div>
     <div class="gang-presence">
-      <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Gang Online:</span>
+      <button class="btn btn-secondary btn-sm" id="btnToggleSizzle" style="font-size: 0.75rem; padding: 4px 10px;" title="Toggle real ambient simmering dum steam audio">
+        🔊 Simmer Sizzle Audio: <span id="sizzleStatus">OFF</span>
+      </button>
       <div class="gang-avatars" title="Salman, Priya, Asif, Sneha, Imran, Bunny are voting live">
         <div class="gang-avatar">S</div>
         <div class="gang-avatar">P</div>
@@ -52,7 +54,7 @@
             End The Group Argument: <span>Where's The Best Biryani Right Now?</span>
           </h1>
           <p class="hero-subtitle">
-            Skip the tourist traps. Live crowd-voting, real-time distance calculations from your exact spot, and the secret list of 12 underground local food joints that generic AI doesn't know about.
+            Skip the tourist traps. Live crowd-voting, 1v1 Battle Royale, real-time distance calculations, and the secret list of 12 underground local food joints that generic AI doesn't know about.
           </p>
           <div class="hero-actions">
             <button class="btn btn-primary" id="btnSimulateGang" aria-label="Simulate Gang Voting">
@@ -61,9 +63,12 @@
             <button class="btn btn-gold" id="btnSpinWheel" aria-label="Spin Handi Decider Wheel">
               🎯 Spin The Handi Wheel (Tie-Breaker)
             </button>
-            <a href="#slangLabSection" class="btn btn-secondary">
-              🗣️ Slang Error Laboratory
-            </a>
+            <button class="btn btn-secondary" onclick="switchTab('battle')">
+              ⚔️ 1v1 Battle Royale
+            </button>
+            <button class="btn btn-secondary" onclick="switchTab('raita')">
+              🥣 Meridian Raita Simulator
+            </button>
           </div>
         </div>
       </section>
@@ -72,138 +77,395 @@
     <!-- Main Content Container -->
     <div class="app-container">
 
-      <!-- Interactive Control Deck (Hubs, Distance, Filters) -->
-      <section class="control-deck" aria-label="Filter and Search Controls">
-        <div class="deck-row">
-          <!-- Hub Picker -->
-          <div class="control-group">
-            <label class="control-label" for="hubSelect">
-              <span>📍 Your Starting Point</span>
-              <span style="color: var(--mint-400);">Live GPS Ready</span>
-            </label>
-            <div class="select-wrapper">
-              <select id="hubSelect" class="custom-select" aria-label="Select Starting Point in Hyderabad"></select>
-            </div>
-          </div>
+      <!-- Navigation Feature Tabs -->
+      <nav class="feature-nav-bar" aria-label="Feature Views">
+        <button class="nav-tab-btn active" data-tab="leaderboard" onclick="switchTab('leaderboard')">
+          👑 Live War Room & Leaderboard
+        </button>
+        <button class="nav-tab-btn" data-tab="battle" onclick="switchTab('battle')">
+          ⚔️ 1v1 Battle Royale Showdown
+        </button>
+        <button class="nav-tab-btn" data-tab="raita" onclick="switchTab('raita')">
+          🥣 Meridian Raita Risk Mini-Game
+        </button>
+        <button class="nav-tab-btn" data-tab="splitter" onclick="switchTab('splitter')">
+          💰 Dawat Bill Splitter & Calculator
+        </button>
+        <button class="nav-tab-btn" data-tab="quiz" onclick="switchTab('quiz')">
+          🧠 Biryani Personality Quiz
+        </button>
+        <button class="nav-tab-btn" data-tab="soundboard" onclick="switchTab('soundboard')">
+          🔊 Street Audio Soundboard
+        </button>
+      </nav>
 
-          <!-- Distance Slider -->
-          <div class="control-group">
-            <label class="control-label" for="distSlider">
-              <span>📏 Maximum Distance</span>
-              <span class="value-badge" id="distLabel">Anywhere in Hyd</span>
-            </label>
-            <div class="slider-container">
-              <input type="range" id="distSlider" class="range-slider" min="2" max="20" step="1" value="20" aria-label="Maximum distance filter in kilometers">
-            </div>
-          </div>
-
-          <!-- Search Bar -->
-          <div class="control-group search-wrapper">
-            <label class="control-label" for="searchInput">
-              <span>🔍 Quick Spot / Area Search</span>
-            </label>
-            <div style="position: relative;">
-              <span class="search-icon">🔎</span>
-              <input type="text" id="searchInput" class="search-input" placeholder="Search by spot (e.g. Meridian, Shadab, Chicha's) or area..." aria-label="Search food spots">
-            </div>
-          </div>
-        </div>
-
-        <!-- Filter Chips Row -->
-        <div class="deck-row" style="border-top: 1px solid var(--border-glass); padding-top: 1rem;">
-          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-            <span style="font-size: 0.78rem; text-transform: uppercase; font-weight: 700; color: var(--text-dim); margin-right: 4px;">Meat Preference:</span>
-            <div class="chip active" data-meat="all">All Specialties</div>
-            <div class="chip" data-meat="mutton">🍖 Pure Mutton Dum</div>
-            <div class="chip" data-meat="chicken">🍗 Chicken Dum</div>
-            <div class="chip" data-meat="beef">🥩 Kalyani / Beef Street</div>
-          </div>
-
-          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-left: auto;">
-            <span style="font-size: 0.78rem; text-transform: uppercase; font-weight: 700; color: var(--text-dim); margin-right: 4px;">Vibe & Logistics:</span>
-            <div class="chip active" data-vibe="all">Any Vibe</div>
-            <div class="chip" data-vibe="lateNight">🌙 2:00 AM Late Night</div>
-            <div class="chip" data-vibe="valet">🅿️ Valet Parking Friendly</div>
-            <div class="chip" data-vibe="underground">🔥 Underground Cult Only</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Main Layout: Grid of Spots + Gang Feed Sidebar -->
-      <div class="main-layout">
+      <!-- VIEW 1: WAR ROOM LEADERBOARD (DEFAULT) -->
+      <div class="view-section active" id="view-leaderboard">
         
-        <!-- Spots Grid Feed -->
-        <section aria-label="Biryani Spot Leaderboard">
-          <div class="section-head">
-            <h2 class="section-title">
-              <span>👑 Live Leaderboard & Secret Gems</span>
-              <span class="counter-tag" id="resultsCount">12 Spots</span>
-            </h2>
-            <div style="font-size: 0.8rem; color: var(--text-dim);">
-              Ranked dynamically by group votes & route distance
+        <!-- Interactive Control Deck (Hubs, Distance, Filters) -->
+        <section class="control-deck" aria-label="Filter and Search Controls">
+          <div class="deck-row">
+            <!-- Hub Picker -->
+            <div class="control-group">
+              <label class="control-label" for="hubSelect">
+                <span>📍 Your Starting Point</span>
+                <span style="color: var(--mint-400);">Live GPS Ready</span>
+              </label>
+              <div class="select-wrapper">
+                <select id="hubSelect" class="custom-select" aria-label="Select Starting Point in Hyderabad"></select>
+              </div>
+            </div>
+
+            <!-- Distance Slider -->
+            <div class="control-group">
+              <label class="control-label" for="distSlider">
+                <span>📏 Maximum Distance</span>
+                <span class="value-badge" id="distLabel">Anywhere in Hyd</span>
+              </label>
+              <div class="slider-container">
+                <input type="range" id="distSlider" class="range-slider" min="2" max="20" step="1" value="20" aria-label="Maximum distance filter in kilometers">
+              </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="control-group search-wrapper">
+              <label class="control-label" for="searchInput">
+                <span>🔍 Quick Spot / Area Search</span>
+              </label>
+              <div style="position: relative;">
+                <span class="search-icon">🔎</span>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search by spot (e.g. Meridian, Shadab, Chicha's) or area..." aria-label="Search food spots">
+              </div>
             </div>
           </div>
 
-          <div class="spots-grid" id="spotsContainer" role="region" aria-live="polite">
-            <!-- Dynamically populated by app.js -->
+          <!-- Filter Chips Row -->
+          <div class="deck-row" style="border-top: 1px solid var(--border-glass); padding-top: 1rem;">
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <span style="font-size: 0.78rem; text-transform: uppercase; font-weight: 700; color: var(--text-dim); margin-right: 4px;">Meat Preference:</span>
+              <div class="chip active" data-meat="all">All Specialties</div>
+              <div class="chip" data-meat="mutton">🍖 Pure Mutton Dum</div>
+              <div class="chip" data-meat="chicken">🍗 Chicken Dum</div>
+              <div class="chip" data-meat="beef">🥩 Kalyani / Beef Street</div>
+            </div>
+
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-left: auto;">
+              <span style="font-size: 0.78rem; text-transform: uppercase; font-weight: 700; color: var(--text-dim); margin-right: 4px;">Vibe & Logistics:</span>
+              <div class="chip active" data-vibe="all">Any Vibe</div>
+              <div class="chip" data-vibe="lateNight">🌙 2:00 AM Late Night</div>
+              <div class="chip" data-vibe="valet">🅿️ Valet Parking Friendly</div>
+              <div class="chip" data-vibe="underground">🔥 Underground Cult Only</div>
+            </div>
           </div>
         </section>
 
-        <!-- Sidebar: Gang Banter & Tie-Breaker Handi Decider -->
-        <aside class="sidebar" aria-label="Gang Banter and Tools">
+        <!-- Main Layout: Grid of Spots + Gang Feed Sidebar -->
+        <div class="main-layout">
           
-          <!-- Tie-Breaker Card -->
-          <div class="side-card decider-card">
-            <div style="font-size: 0.75rem; font-weight: 800; color: var(--gold-400); text-transform: uppercase; letter-spacing: 1.5px;">
-              Group Deadlock Resolver
+          <!-- Spots Grid Feed -->
+          <section aria-label="Biryani Spot Leaderboard">
+            <div class="section-head">
+              <h2 class="section-title">
+                <span>👑 Live Leaderboard & Secret Gems</span>
+                <span class="counter-tag" id="resultsCount">12 Spots</span>
+              </h2>
+              <div style="font-size: 0.8rem; color: var(--text-dim);">
+                Ranked dynamically by group votes & route distance
+              </div>
             </div>
-            <h3 style="font-family: var(--font-royal); font-size: 1.3rem; margin: 4px 0 8px 0; color: #fff;">
-              Spin The Biryani Handi
-            </h3>
-            <p style="font-size: 0.82rem; color: #cbd5e1; margin-bottom: 12px;">
-              Can't agree after 30 minutes of fighting? Let the sacred Nizami Handi wheel make the final call!
-            </p>
-            <div class="handi-wheel-preview">
-              <span class="handi-pot-icon" aria-hidden="true">🍲</span>
-            </div>
-            <button class="btn btn-gold" onclick="openDeciderModal()" style="width: 100%; justify-content: center;">
-              🎲 Launch Decider Wheel
-            </button>
-          </div>
 
-          <!-- Gang Discussion Feed -->
-          <div class="side-card">
-            <div class="side-header">
-              <span class="side-title">
-                <span>💬 Gang War Room Live</span>
-              </span>
-              <span style="font-size: 0.72rem; color: var(--mint-400); font-weight: 700;">● Active</span>
+            <div class="spots-grid" id="spotsContainer" role="region" aria-live="polite">
+              <!-- Dynamically populated by app.js -->
             </div>
-            <div class="gang-chat-box" id="gangChatBox" aria-live="polite">
-              <!-- Dynamically populated with chat bubbles -->
-            </div>
-            <div style="margin-top: 12px;">
-              <button class="btn btn-secondary btn-sm" onclick="triggerSingleGangVote()" style="width: 100%; justify-content: center;">
-                + Trigger Friend's Vote & Hot Take
+          </section>
+
+          <!-- Sidebar: Gang Banter & Tie-Breaker Handi Decider -->
+          <aside class="sidebar" aria-label="Gang Banter and Tools">
+            
+            <!-- Tie-Breaker Card -->
+            <div class="side-card decider-card">
+              <div style="font-size: 0.75rem; font-weight: 800; color: var(--gold-400); text-transform: uppercase; letter-spacing: 1.5px;">
+                Group Deadlock Resolver
+              </div>
+              <h3 style="font-family: var(--font-royal); font-size: 1.3rem; margin: 4px 0 8px 0; color: #fff;">
+                Spin The Biryani Handi
+              </h3>
+              <p style="font-size: 0.82rem; color: #cbd5e1; margin-bottom: 12px;">
+                Can't agree after 30 minutes of fighting? Let the sacred Nizami Handi wheel make the final call!
+              </p>
+              <div class="handi-wheel-preview">
+                <span class="handi-pot-icon" aria-hidden="true">🍲</span>
+              </div>
+              <button class="btn btn-gold" onclick="openDeciderModal()" style="width: 100%; justify-content: center;">
+                🎲 Launch Decider Wheel
               </button>
             </div>
-          </div>
 
-          <!-- Slang Transformation Rule Quickcard -->
-          <div class="side-card" style="border-left: 3px solid var(--saffron-500);">
-            <div style="font-size: 0.75rem; font-weight: 800; color: var(--saffron-400); text-transform: uppercase; margin-bottom: 4px;">
-              📜 Hyderabadi Slang Rule Active
+            <!-- Gang Discussion Feed -->
+            <div class="side-card">
+              <div class="side-header">
+                <span class="side-title">
+                  <span>💬 Gang War Room Live</span>
+                </span>
+                <span style="font-size: 0.72rem; color: var(--mint-400); font-weight: 700;">● Active</span>
+              </div>
+              <div class="gang-chat-box" id="gangChatBox" aria-live="polite">
+                <!-- Dynamically populated with chat bubbles -->
+              </div>
+              <div style="margin-top: 12px;">
+                <button class="btn btn-secondary btn-sm" onclick="triggerSingleGangVote()" style="width: 100%; justify-content: center;">
+                  + Trigger Friend's Vote & Hot Take
+                </button>
+              </div>
             </div>
-            <div style="font-size: 0.8rem; color: #e2e8f0; line-height: 1.5;">
-              Boring software errors are automatically rewritten into authentic Dakhni street slang (traffic delays, bad parking challans & the Meridian raita code).
-            </div>
-          </div>
 
-        </aside>
+            <!-- Slang Transformation Rule Quickcard -->
+            <div class="side-card" style="border-left: 3px solid var(--saffron-500);">
+              <div style="font-size: 0.75rem; font-weight: 800; color: var(--saffron-400); text-transform: uppercase; margin-bottom: 4px;">
+                📜 Hyderabadi Slang Rule Active
+              </div>
+              <div style="font-size: 0.8rem; color: #e2e8f0; line-height: 1.5;">
+                Boring software errors are automatically rewritten into authentic Dakhni street slang (traffic delays, bad parking challans & the Meridian raita code).
+              </div>
+            </div>
+
+          </aside>
+
+        </div>
 
       </div>
 
-      <!-- Slang Error Laboratory Section -->
+      <!-- VIEW 2: 1v1 BATTLE ROYALE SHOWDOWN -->
+      <div class="view-section" id="view-battle">
+        <section class="battle-arena-container" aria-label="1v1 Battle Royale">
+          <div class="battle-header">
+            <div class="battle-streak-banner">
+              🔥 1v1 Dawat Faceoff • Match <span id="battleRoundNum">1</span>
+            </div>
+            <h2 style="font-family: var(--font-royal); font-size: 2.2rem; color: #fff;">
+              Biryani Clash of Titans
+            </h2>
+            <p style="color: var(--text-muted); max-width: 650px; margin: 4px auto 0 auto;">
+              Two iconic joints enter, only one wins your appetite! Compare their underground stats and vote for the ultimate winner.
+            </p>
+          </div>
+
+          <div class="battle-grid">
+            <!-- Fighter A -->
+            <div class="fighter-card" id="fighterACard">
+              <!-- Dynamically populated -->
+            </div>
+
+            <!-- VS Center -->
+            <div class="vs-divider">
+              <div class="vs-circle">VS</div>
+              <button class="btn btn-secondary btn-sm" onclick="rollNewBattle()" style="margin-top: 1.5rem;">
+                🔄 Shuffle Matchup
+              </button>
+            </div>
+
+            <!-- Fighter B -->
+            <div class="fighter-card" id="fighterBCard">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- VIEW 3: MERIDIAN RAITA RISK MINI-GAME -->
+      <div class="view-section" id="view-raita">
+        <section class="raita-sim-card" aria-label="Meridian Raita Risk Simulator">
+          <div style="font-size: 0.8rem; font-weight: 800; color: #f87171; text-transform: uppercase; letter-spacing: 1.5px;">
+            ⚠️ High-Stakes Panjagutta Protocol
+          </div>
+          <h2 style="font-family: var(--font-royal); font-size: 2.2rem; color: #fff; margin-top: 4px;">
+            Meridian Extra Raita Simulator
+          </h2>
+          <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">
+            The golden rule of Panjagutta: <em>"Double Salan maango, raita mat maangna!"</em><br>
+            How many times do you dare ask the waiter for an extra curd pack before total restaurant chaos ensues?
+          </p>
+
+          <div class="raita-meter-track">
+            <div class="raita-meter-fill" id="raitaMeterFill"></div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; max-width: 600px; margin: 0 auto; font-size: 0.78rem; font-weight: 700; color: var(--text-dim);">
+            <span>Sukoon (0%)</span>
+            <span>Suspect (35%)</span>
+            <span>Stare Down (70%)</span>
+            <span>POLICE CRANE (100%)</span>
+          </div>
+
+          <div class="raita-stage-portrait" id="raitaPortrait">
+            🧑‍🍳
+          </div>
+
+          <div class="raita-dialogue-bubble" id="raitaDialogue">
+            Waiter: "Ji bhai, ek plate Mutton Dum Biryani aur garam mirchi ka salan tayyar hai!"
+          </div>
+
+          <div class="raita-controls-row">
+            <button class="btn btn-primary" id="btnAskRaita" onclick="handleAskRaita()">
+              🥣 "Bhai, Ek Extra Raita Laana!" (Press Luck)
+            </button>
+            <button class="btn btn-gold" id="btnBailoutSalan" onclick="handleBailoutSalan()">
+              🛡️ "Chhodo, Double Salan Se Kaam Chalao" (Survive)
+            </button>
+            <button class="btn btn-secondary" onclick="resetRaitaSim()">
+              🔄 Reset Table
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <!-- VIEW 4: DAWAT BILL SPLITTER -->
+      <div class="view-section" id="view-splitter">
+        <section aria-label="Dawat Bill Splitter">
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <div style="font-size: 0.8rem; font-weight: 800; color: var(--gold-400); text-transform: uppercase; letter-spacing: 1px;">
+              Post-Dinner Friendship Saver
+            </div>
+            <h2 style="font-family: var(--font-royal); font-size: 2.2rem; color: #fff;">
+              The Dawat Bill & Bakra Calculator
+            </h2>
+            <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">
+              No more <em>"Miya maine toh sirf salan chakkha tha!"</em> excuses. Fair, funny bill breakdown for your biryani gang.
+            </p>
+          </div>
+
+          <div class="dawat-calc-grid">
+            <div class="calc-panel">
+              <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: #fff; margin-bottom: 1.25rem;">
+                📋 What Did The Gang Order?
+              </h3>
+
+              <div class="calc-input-group">
+                <label for="splitTotalBill">Total Restaurant Bill Amount (₹)</label>
+                <input type="number" id="splitTotalBill" class="calc-input" value="2400" min="200" step="50" oninput="calculateDawatSplit()">
+              </div>
+
+              <div class="calc-input-group">
+                <label for="splitGangSize">Total Gang Members Sitting</label>
+                <input type="number" id="splitGangSize" class="calc-input" value="5" min="2" max="15" oninput="calculateDawatSplit()">
+              </div>
+
+              <div class="calc-input-group">
+                <label for="splitThumsUpCount">Thums Up Bottles (Mandatory in Hyd!)</label>
+                <input type="number" id="splitThumsUpCount" class="calc-input" value="4" min="0" oninput="calculateDawatSplit()">
+              </div>
+
+              <div class="calc-input-group">
+                <label for="splitTipAmount">Waiter Tip (Sukoon Se Khilaya)</label>
+                <input type="number" id="splitTipAmount" class="calc-input" value="100" min="0" step="20" oninput="calculateDawatSplit()">
+              </div>
+            </div>
+
+            <div class="calc-panel" id="splitSummaryBox">
+              <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: #fff; margin-bottom: 1.25rem;">
+                👑 The Who-Pays-What Breakdown
+              </h3>
+
+              <div class="role-card">
+                <div class="role-info">
+                  <h4>🍖 The Degh Destroyer (Heavy Eater)</h4>
+                  <p>Ate 3 mutton shanks + bone marrow</p>
+                </div>
+                <div class="role-amount" id="amtHeavy">₹620</div>
+              </div>
+
+              <div class="role-card">
+                <div class="role-info">
+                  <h4>🍚 The Normal Biryani Bhai (Fair Share)</h4>
+                  <p>Standard dum plate + salan + Thums Up</p>
+                </div>
+                <div class="role-amount" id="amtNormal">₹510</div>
+              </div>
+
+              <div class="role-card">
+                <div class="role-info">
+                  <h4>🥗 "Maine Toh Bas Salad Khaya" (Excuser)</h4>
+                  <p>Says he's dieting, but stole 2 bites of chicken</p>
+                </div>
+                <div class="role-amount" id="amtDiet">₹220</div>
+              </div>
+
+              <div style="margin-top: 1.5rem;">
+                <button class="btn btn-gold" style="width: 100%; justify-content: center;" onclick="copyDawatBillMessage()">
+                  📋 Copy Gang Bill Notice for WhatsApp
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- VIEW 5: BIRYANI PERSONALITY QUIZ -->
+      <div class="view-section" id="view-quiz">
+        <section class="quiz-card-box" aria-label="Biryani Personality Quiz">
+          <div style="text-align: center; margin-bottom: 1.5rem;">
+            <div style="font-size: 0.78rem; font-weight: 800; color: var(--saffron-400); text-transform: uppercase;">
+              Nizami Soul Matcher
+            </div>
+            <h2 style="font-family: var(--font-royal); font-size: 2rem; color: #fff;">
+              What Kind of Biryani Eater Are You?
+            </h2>
+            <p style="color: var(--text-muted); font-size: 0.88rem;">
+              Answer 3 rapid questions to discover your spirit spot in Hyderabad!
+            </p>
+          </div>
+
+          <div id="quizContainer">
+            <!-- Dynamically populated question or result -->
+          </div>
+        </section>
+      </div>
+
+      <!-- VIEW 6: STREET AUDIO SOUNDBOARD -->
+      <div class="view-section" id="view-soundboard">
+        <section class="soundboard-deck" aria-label="Hyderabadi Soundboard">
+          <div style="margin-bottom: 1rem;">
+            <div style="font-size: 0.8rem; font-weight: 800; color: var(--gold-400); text-transform: uppercase;">
+              🔊 The Authentic Voice of Hyderabad
+            </div>
+            <h3 style="font-family: var(--font-royal); font-size: 1.4rem; color: #fff;">
+              Hyderabadi Street Audio Soundboard
+            </h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">
+              Click any button below to trigger real audio & vocal local expressions:
+            </p>
+          </div>
+
+          <div class="soundboard-buttons">
+            <button class="sound-btn" onclick="playSlangSpeech('Ustaad, do double masala lagao jaldi!')">
+              🗣️ "Do Double Masala Lagao!"
+            </button>
+            <button class="sound-btn" onclick="playSlangSpeech('Raita nakko re baap, salan se kaam chalao!')">
+              🗣️ "Raita Nakko Re Baap!"
+            </button>
+            <button class="sound-btn" onclick="playSlangSpeech('Begumpet pe aakhri jaam hai chicha, gaadi mod lo!')">
+              🗣️ "Begumpet Pe Aakhri Jaam Hai!"
+            </button>
+            <button class="sound-btn" onclick="playSlangSpeech('Baigan mein mila diye pura plan!')">
+              🗣️ "Baigan Mein Mila Diye!"
+            </button>
+            <button class="sound-btn" onclick="playSlangSpeech('Khabardar, udhar gadi lagaye toh challan katega!')">
+              🗣️ "Seedha Challan Katega!"
+            </button>
+            <button class="sound-btn" onclick="playSlangSpeech('Aakhri kirrak dum biryani hai bhai!')">
+              🗣️ "Aakhri Kirrak Biryani!"
+            </button>
+            <button class="sound-btn" onclick="slangEngine.playSound('slang-alert')">
+              🛺 Hyderabad Auto Horn Blast
+            </button>
+            <button class="sound-btn" onclick="slangEngine.playSound('winner')">
+              🎺 Royal Nizami Dawat Fanfare
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <!-- Slang Error Laboratory Section (Always Accessible) -->
       <section class="slang-lab-section" id="slangLabSection" aria-label="Slang Error Laboratory">
         <div class="lab-header">
           <span class="lab-tag">Interactive Street Slang Roaster</span>

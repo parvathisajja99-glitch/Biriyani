@@ -1,5 +1,6 @@
 // Hyderabadi Street Slang Error Transformation Engine
 // Implements the text rules to convert dry, corporate error messages into funny Dakhni local street slang.
+// Includes Web Audio synthesizer and Web Speech API local soundboard.
 
 const SLANG_RULES = [
   {
@@ -70,6 +71,8 @@ const SLANG_RULES = [
 class SlangEngine {
   constructor() {
     this.audioCtx = null;
+    this.ambientSizzle = null;
+    this.sizzleActive = false;
   }
 
   // Initialize Web Audio API on first user gesture
@@ -83,7 +86,7 @@ class SlangEngine {
   }
 
   // Play synthesized retro tones
-  playSound(type) {
+  playSound(type, param = 1) {
     try {
       this.initAudio();
       if (!this.audioCtx) return;
@@ -95,7 +98,6 @@ class SlangEngine {
       const now = ctx.currentTime;
 
       if (type === 'vote') {
-        // High cheery ding
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'sine';
@@ -108,7 +110,6 @@ class SlangEngine {
         osc.start(now);
         osc.stop(now + 0.25);
       } else if (type === 'slang-alert') {
-        // Funny Hyderabad rickshaw double-horn buzz
         const osc1 = ctx.createOscillator();
         const osc2 = ctx.createOscillator();
         const gain = ctx.createGain();
@@ -131,8 +132,47 @@ class SlangEngine {
         osc2.start(now);
         osc1.stop(now + 0.35);
         osc2.stop(now + 0.35);
+      } else if (type === 'smash') {
+        // Impact punch for battle royale
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.exponentialRampToValueAtTime(40, now + 0.2);
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.25);
+      } else if (type === 'tension') {
+        // Dramatic tension pitch for Raita mini-game
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        const baseFreq = 220 + param * 4; // rises from 220Hz to 620Hz
+        osc.frequency.setValueAtTime(baseFreq, now);
+        osc.frequency.linearRampToValueAtTime(baseFreq + 40, now + 0.15);
+        gain.gain.setValueAtTime(0.15 + (param / 400), now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.2);
+      } else if (type === 'explosion') {
+        // Dramatic game-over / alert crash
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(120, now);
+        osc.frequency.exponentialRampToValueAtTime(30, now + 0.6);
+        gain.gain.setValueAtTime(0.5, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.6);
       } else if (type === 'spin') {
-        // Click sound for wheel spin
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'triangle';
@@ -144,7 +184,6 @@ class SlangEngine {
         osc.start(now);
         osc.stop(now + 0.05);
       } else if (type === 'winner') {
-        // Royal celebratory arpeggio
         const notes = [440, 554.37, 659.25, 880];
         notes.forEach((freq, idx) => {
           const osc = ctx.createOscillator();
@@ -164,6 +203,70 @@ class SlangEngine {
     }
   }
 
+  // Toggle ambient degh dum sizzling white noise
+  toggleDumSizzle() {
+    this.initAudio();
+    if (!this.audioCtx) return false;
+
+    if (this.sizzleActive) {
+      if (this.ambientSizzle) {
+        this.ambientSizzle.stop();
+        this.ambientSizzle.disconnect();
+        this.ambientSizzle = null;
+      }
+      this.sizzleActive = false;
+      return false;
+    } else {
+      const bufferSize = this.audioCtx.sampleRate * 2;
+      const buffer = this.audioCtx.createBuffer(1, bufferSize, this.audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * 0.04; // subtle steam hiss
+      }
+
+      const noise = this.audioCtx.createBufferSource();
+      noise.buffer = buffer;
+      noise.loop = true;
+
+      const filter = this.audioCtx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = 850;
+      filter.Q.value = 1.2;
+
+      const gain = this.audioCtx.createGain();
+      gain.gain.value = 0.3;
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.audioCtx.destination);
+      noise.start();
+
+      this.ambientSizzle = noise;
+      this.sizzleActive = true;
+      return true;
+    }
+  }
+
+  // Speak authentic Hyderabadi phrase using Web Speech API
+  speak(text) {
+    if (!('speechSynthesis' in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1.05;
+      utterance.pitch = 1.1;
+      
+      // Try to find Indian English or Hindi voice
+      const voices = window.speechSynthesis.getVoices();
+      const localVoice = voices.find(v => v.lang.includes("IN") || v.lang.includes("hi"));
+      if (localVoice) utterance.voice = localVoice;
+
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {
+      console.warn("Speech synthesis error", e);
+    }
+  }
+
   // Translate boring message into Hyderabadi street slang
   translate(inputMessage) {
     if (!inputMessage || typeof inputMessage !== "string") {
@@ -172,7 +275,6 @@ class SlangEngine {
 
     const lower = inputMessage.toLowerCase();
 
-    // Check each rule's keywords
     for (const rule of SLANG_RULES) {
       const match = rule.keywords.some(kw => lower.includes(kw));
       if (match) {
@@ -185,7 +287,6 @@ class SlangEngine {
       }
     }
 
-    // Default fallback slang for generic unhandled errors
     return {
       category: "GENERIC_CHAOS",
       original: inputMessage,
@@ -221,7 +322,6 @@ class SlangEngine {
 
     container.appendChild(toast);
 
-    // Auto dismiss after 7 seconds
     setTimeout(() => {
       toast.classList.add('animate-fade-out');
       setTimeout(() => {
